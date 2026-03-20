@@ -1,13 +1,14 @@
 # Data Stream Passengers
 
 
-## Flujo
+## Flow
 
 ### Dataflow:
-Ingiere el JSON de Pub/Sub y lo guarda en la tabla `vuelos_raw`.
+It ingests the Pub/Sub JSON and saves it in the table `vuelos_raw`.
 
 ### Dataform:
 Toma los "datos crudos" `vuelos_raw` y crea la tabla `segmentacion_pasajeros` usando SQL al dejar los datos en BigQuery.
+It takes the "raw data" `flights_raw` and creates the `passenger_segmentation` table using SQL by leaving the data in BigQuery.
 
 ## Ejecución
 
