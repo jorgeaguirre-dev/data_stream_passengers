@@ -1,1 +1,9 @@
 venv/
+
+.terraform/
+terraform.tfstate
+.terraform.tfstate.lock.info
+terraform.tfstate.backup
+.terraform.lock.hcl
+
+draft/

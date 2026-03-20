@@ -2,6 +2,7 @@
 provider "google" {
   project = var.project_id
   region  = var.region
+  zone  = var.zone
 }
 
 # 1. Pub/Sub para Ingesta de Eventos
@@ -15,7 +16,7 @@ resource "google_bigquery_dataset" "latam_ds" {
   location   = var.location
 }
 
-# 3. Bucket de Staging para Dataflow
+# 3. Bucket Cloud Storage de Staging para Dataflow
 resource "google_storage_bucket" "dataflow_staging" {
   name          = var.dataflow_staging_bucket
   location      = var.location

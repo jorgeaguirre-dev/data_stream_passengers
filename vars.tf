@@ -1,13 +1,19 @@
 variable "project_id" {
   description = "GCP Project ID"
   type        = string
-  default     = "latam-challenge-project"
+  default     = "data-stream-passengers"
 }
 
 variable "region" {
   description = "GCP region"
   type        = string
   default     = "us-central1"
+}
+
+variable "zone" {
+  description = "GCP zone"
+  type        = string
+  default     = "us-central1-a"
 }
 
 variable "location" {
@@ -31,7 +37,7 @@ variable "bigquery_dataset_id" {
 variable "dataflow_staging_bucket" {
   description = "Nombre del bucket de staging para Dataflow"
   type        = string
-  default     = "latam-dataflow-staging-bucket"
+  default     = "dataflow-staging-bucket"
 }
 
 variable "dataflow_job_name" {
