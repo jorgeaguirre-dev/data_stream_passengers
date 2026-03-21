@@ -4,7 +4,7 @@ import time
 from google.cloud import pubsub_v1
 
 # 1. Configuración de Credenciales
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "iam/service-account.json"
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "../iam/service-account.json"
 
 project_id = "data-stream-passengers"
 topic_id = "flight-search-events"

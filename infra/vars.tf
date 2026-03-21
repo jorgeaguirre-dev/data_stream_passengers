@@ -37,7 +37,7 @@ variable "bigquery_dataset_id" {
 variable "dataflow_staging_bucket" {
   description = "Nombre del bucket de staging para Dataflow"
   type        = string
-  default     = "dataflow-staging-bucket"
+  default     = "airline-dataflow-staging-bucket"
 }
 
 variable "dataflow_job_name" {

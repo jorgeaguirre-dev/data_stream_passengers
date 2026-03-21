@@ -4,6 +4,11 @@
 This project is also avalaible in GitLab.com: https://gitlab.com/hi-group623012/HI-data_stream_passengers
 
 ## Flow
+El flujo real:
+
+- Pub/Sub: Recibe el evento de búsqueda.
+- Dataflow: Lee de Pub/Sub y escribe el JSON crudo en una tabla llamada vuelos_raw en BigQuery.
+- Dataform: Toma esa tabla vuelos_raw, aplica el SQL (limpieza, cálculos, filtros) y crea una tabla nueva llamada pasajeros_segmentados.
 
 ### Dataflow:
 It ingests the Pub/Sub JSON and saves it in the table `vuelos_raw`.
