@@ -1,0 +1,7 @@
+config {
+  type: "declaration",
+  database: "data-stream-passengers",
+  schema: "passenger_segmentation",
+  name: "raw_events",
+  description: "Tabla cruda con eventos de búsqueda de vuelos desde Pub/Sub"
+}
