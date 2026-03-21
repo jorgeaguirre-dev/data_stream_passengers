@@ -4,10 +4,9 @@ import time
 from google.cloud import pubsub_v1
 
 # 1. Configuración de Credenciales
-# Apunta a la ruta donde descargaste tu JSON
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "ruta/a/tu/service-account.json"
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "iam/service-account.json"
 
-project_id = "data-stream-passengers" 
+project_id = "data-stream-passengers"
 topic_id = "flight-search-events"
 
 publisher = pubsub_v1.PublisherClient()
@@ -31,7 +30,7 @@ def simulate_searches():
     print(f"Mensaje enviado: {future.result()}")
 
 if __name__ == "__main__":
-    print("Iniciando simulación de tráfico para LATAM...")
+    print("Iniciando simulación de tráfico para Aerolinea...")
     for i in range(5): # Enviamos 5 eventos
         simulate_searches()
         time.sleep(2)

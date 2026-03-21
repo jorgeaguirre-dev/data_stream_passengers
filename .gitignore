@@ -7,3 +7,5 @@ terraform.tfstate.backup
 .terraform.lock.hcl
 
 draft/
+
+service-account.json
