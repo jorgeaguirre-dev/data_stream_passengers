@@ -24,12 +24,12 @@ resource "google_storage_bucket" "airline_dataflow_staging" {
 }
 
 # 4. Job de Dataflow (Streaming)
-resource "google_dataflow_job" "streaming_segmentation" {
-  name              = var.dataflow_job_name
-  template_gcs_path = "gs://dataflow-templates/latest/PubSub_to_BigQuery"
-  temp_gcs_location = "${google_storage_bucket.airline_dataflow_staging.url}/temp"
-  parameters = {
-    inputTopic      = google_pubsub_topic.flight_searches.id
-    outputTableSpec = "${var.project_id}:${google_bigquery_dataset.flights_ds.dataset_id}.raw_events"
-  }
-}
+# resource "google_dataflow_job" "streaming_segmentation" {
+#   name              = var.dataflow_job_name
+#   template_gcs_path = "gs://dataflow-templates/latest/PubSub_to_BigQuery"
+#   temp_gcs_location = "${google_storage_bucket.airline_dataflow_staging.url}/temp"
+#   parameters = {
+#     inputTopic      = google_pubsub_topic.flight_searches.id
+#     outputTableSpec = "${var.project_id}:${google_bigquery_dataset.flights_ds.dataset_id}.raw_events"
+#   }
+# }

@@ -16,7 +16,7 @@ output "bigquery_dataset_id" {
   description = "El ID del dataset de BigQuery donde aterrizarán los datos crudos."
 }
 
-# El ID del proyecto (útil para scripts de automatización)
+# El ID del proyecto
 output "project_id" {
   value = var.project_id
 }
