@@ -3,13 +3,13 @@ from apache_beam.options.pipeline_options import PipelineOptions
 import json
 
 def run():
-    # Configuración básica para que Beam sepa a dónde ir
+    # Enrutando Beam para leer de Pub/Sub y escribir en BigQuery
     options = PipelineOptions(
         streaming=True,
         project="data-stream-passengers",
         region="us-central1",
-        staging_location="gs://airline-dataflow-staging-jaguirre-01/staging",
-        temp_location="gs://airline-dataflow-staging-jaguirre-01/temp"
+        staging_location="gs://airline_dataflow_staging/staging",
+        temp_location="gs://airline_dataflow_staging/temp"
     )
 
     with beam.Pipeline(options=options) as p:
@@ -19,7 +19,7 @@ def run():
             | "Parse JSON" >> beam.Map(lambda x: json.loads(x.decode("utf-8")))
             | "Write to BigQuery" >> beam.io.WriteToBigQuery(
                 "data-stream-passengers:passenger_segmentation.raw_events",
-                # Aquí está la "Opción B" que buscabas:
+                # "Opción B":
                 schema="user_id:STRING, origin:STRING, destination:STRING, cabin:STRING, timestamp:FLOAT",
                 create_disposition=beam.io.BigQueryDisposition.CREATE_IF_NEEDED,
                 write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND
