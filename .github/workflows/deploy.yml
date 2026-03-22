@@ -1,0 +1,47 @@
+name: 'Infrastructure & Pipeline Deploy'
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  terraform-and-dataflow:
+    runs-on: ubuntu-latest
+    env:
+      GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+
+    - name: Terraform Init & Apply
+      run: |
+        terraform init
+        terraform apply -auto-approve
+
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install Dependencies
+      run: |
+        pip install apache-beam[gcp]
+
+    - name: Launch Dataflow Pipeline
+      run: |
+        # Usamos los outputs de Terraform para el comando
+        export PROJECT_ID=$(terraform output -raw project_id)
+        export BUCKET_URL=$(terraform output -raw staging_bucket_url)
+        
+        python pipeline.py \
+          --runner DataflowRunner \
+          --project $PROJECT_ID \
+          --region us-central1 \
+          --staging_location $BUCKET_URL/staging \
+          --temp_location $BUCKET_URL/temp \
+          --job_name skyhigh-deploy-$(date +%s) \
+          --streaming
