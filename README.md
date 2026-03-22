@@ -74,8 +74,8 @@ python pipeline.py \
     --region us-central1 \
     --staging_location $BUCKET_URL/staging \
     --temp_location $BUCKET_URL/temp \
-    --template_location $BUCKET_URL/templates/sky-high-pipeline \
-    --job_name sky-high-segmentation-v1 \
+    --template_location $BUCKET_URL/templates/airline-pipeline \
+    --job_name airline-segmentation-v1 \
     --streaming
 
 
@@ -89,7 +89,7 @@ python pipeline.py \
     --region us-central1 \
     --staging_location $BUCKET_URL/staging \
     --temp_location $BUCKET_URL/temp \
-    --job_name sky-high-segmentation-v2 \
+    --job_name airline-segmentation-v2 \
     --streaming
 
 
@@ -98,7 +98,7 @@ python pipeline.py \
     --runner DataflowRunner \
     --project data-stream-passengers \
     --region us-central1 \
-    --temp_location gs://airline-dataflow-staging-jaguirre-01/temp \
+    --temp_location gs://airline-dataflow-staging/temp \
     --job_name flight-segmentation-v2
 
 

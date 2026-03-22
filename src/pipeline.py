@@ -19,7 +19,6 @@ def run():
             | "Parse JSON" >> beam.Map(lambda x: json.loads(x.decode("utf-8")))
             | "Write to BigQuery" >> beam.io.WriteToBigQuery(
                 "data-stream-passengers:passenger_segmentation.raw_events",
-                # "Opción B":
                 schema="user_id:STRING, origin:STRING, destination:STRING, cabin:STRING, timestamp:FLOAT",
                 create_disposition=beam.io.BigQueryDisposition.CREATE_IF_NEEDED,
                 write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND

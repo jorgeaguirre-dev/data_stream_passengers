@@ -43,5 +43,5 @@ jobs:
           --region us-central1 \
           --staging_location $BUCKET_URL/staging \
           --temp_location $BUCKET_URL/temp \
-          --job_name skyhigh-deploy-$(date +%s) \
+          --job_name airline-deploy-$(date +%s) \
           --streaming
