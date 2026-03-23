@@ -1,18 +1,13 @@
 import apache_beam as beam
 from apache_beam.options.pipeline_options import PipelineOptions
 import json
+import sys
 
-def run():
-    # Enrutando Beam para leer de Pub/Sub y escribir en BigQuery
-    options = PipelineOptions(
-        streaming=True,
-        project="data-stream-passengers",
-        region="us-central1",
-        staging_location="gs://airline_dataflow_staging/staging",
-        temp_location="gs://airline_dataflow_staging/temp"
-    )
+def run(argv=None):
+    # Esto permite que Beam tome los parámetros de la terminal (--project, --staging_location, etc.)
+    pipeline_options = PipelineOptions(argv)
 
-    with beam.Pipeline(options=options) as p:
+    with beam.Pipeline(options=pipeline_options) as p:
         (
             p
             | "Read from PubSub" >> beam.io.ReadFromPubSub(topic="projects/data-stream-passengers/topics/flight-search-events")
@@ -26,4 +21,4 @@ def run():
         )
 
 if __name__ == "__main__":
-    run()
+    run(sys.argv)

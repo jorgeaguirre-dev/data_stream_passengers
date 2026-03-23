@@ -62,23 +62,10 @@ terraform init
 terraform plan
 terraform apply -auto-approve
 
-
-# Extraemos los valores reales que creó Terraform
-export PROJECT_ID=$(terraform output -raw project_id)
 export TOPIC_ID=$(terraform output -raw pubsub_topic_id)
-export BUCKET_URL=$(terraform output -raw staging_bucket_url)
 
-python pipeline.py \
-    --runner DataflowRunner \
-    --project $PROJECT_ID \
-    --region us-central1 \
-    --staging_location $BUCKET_URL/staging \
-    --temp_location $BUCKET_URL/temp \
-    --template_location $BUCKET_URL/templates/airline-pipeline \
-    --job_name airline-segmentation-v1 \
-    --streaming
-
-
+# SIN TEMPLATE
+export GOOGLE_APPLICATION_CREDENTIALS="/home/repo/Challenges/data_stream_passengers/iam/service-account.json"
 # Asegúrar que las variables tengan los valores de los outputs del nuevo TF
 export PROJECT_ID=$(terraform output -raw project_id)
 export BUCKET_URL=$(terraform output -raw staging_bucket_url)
@@ -92,7 +79,10 @@ python pipeline.py \
     --job_name airline-segmentation-v2 \
     --streaming
 
-
+# Permisos específicos para la cuenta de servicio developer de mi caso puntual (luego generalizar)
+gcloud projects add-iam-policy-binding data-stream-passengers \
+    --member="serviceAccount:14008294402-compute@developer.gserviceaccount.com" \
+    --role="roles/dataflow.worker"
 
 python pipeline.py \
     --runner DataflowRunner \
