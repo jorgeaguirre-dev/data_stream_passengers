@@ -19,8 +19,13 @@ jobs:
 
     - name: Terraform Init & Apply
       run: |
+        cd infra
         terraform init
         terraform apply -auto-approve
+        # Usamos los outputs de Terraform para el comando
+        export PROJECT_ID=$(terraform output -raw project_id)
+        export BUCKET_URL=$(terraform output -raw staging_bucket_url)        
+        cd ..
 
     - name: Setup Python
       uses: actions/setup-python@v4
@@ -33,11 +38,7 @@ jobs:
 
     - name: Launch Dataflow Pipeline
       run: |
-        # Usamos los outputs de Terraform para el comando
-        export PROJECT_ID=$(terraform output -raw project_id)
-        export BUCKET_URL=$(terraform output -raw staging_bucket_url)
-        
-        python pipeline.py \
+        python src/pipeline.py \
           --runner DataflowRunner \
           --project $PROJECT_ID \
           --region us-central1 \
