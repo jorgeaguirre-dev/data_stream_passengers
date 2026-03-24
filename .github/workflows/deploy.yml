@@ -22,15 +22,15 @@ jobs:
       uses: hashicorp/setup-terraform@v2
 
     - name: Terraform Init & Apply
-      id: tf_apply
+      id: terraform_step
       env:
         GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcp_key.json
       run: |
         cd infra
         terraform init
         terraform apply -auto-approve
-        export PROJECT_ID=$(terraform output -raw project_id) >> $GITHUB_ENV
-        export BUCKET_URL=$(terraform output -raw staging_bucket_url) >> $GITHUB_ENV
+        echo "project_id=$(terraform output -raw project_id)" >> $GITHUB_OUTPUT
+        echo "bucket_url=$(terraform output -raw staging_bucket_url)" >> $GITHUB_OUTPUT
         cd ..
 
     - name: Setup Python
@@ -43,12 +43,15 @@ jobs:
         pip install apache-beam[gcp]
 
     - name: Launch Dataflow Pipeline
+      env:
+        PROJECT_ID: ${{ steps.terraform_step.outputs.project_id }}
+        BUCKET_URL: ${{ steps.terraform_step.outputs.bucket_url }}
       run: |
         python src/pipeline.py \
           --runner DataflowRunner \
-          --project ${{ env.PROJECT_ID }} \
+          --project $PROJECT_ID \
           --region us-central1 \
-          --staging_location ${{ env.BUCKET_URL }}/staging \
-          --temp_location ${{ env.BUCKET_URL }}/temp \
+          --staging_location $BUCKET_URL/staging \
+          --temp_location $BUCKET_URL/temp \
           --job_name airline-segmentation-gh-$(date +%s) \
           --streaming
