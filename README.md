@@ -1,21 +1,7 @@
 # Data Stream Passengers
 
-✈️ SkyHigh Data Platform: Real-Time Passenger Segmentation
-Este proyecto implementa una arquitectura Event-Driven en Google Cloud para segmentar pasajeros en tiempo real basada en su comportamiento de búsqueda.
-
-🏗️ Arquitectura
-Ingesta: Google Pub/Sub recibe eventos de búsqueda en formato JSON.
-
-Procesamiento: Pipeline de Apache Beam (Python) ejecutado en Dataflow que limpia y valida los datos en streaming.
-
-Almacenamiento: BigQuery como Data Warehouse.
-
-Transformación: Dataform para orquestar modelos SQL y generar segmentos de "Alta Prioridad".
-
-IaC: Infraestructura completa gestionada con Terraform.
-
-----
-Infraestructura como Código: Todo el entorno (Pub/Sub, BigQuery, Storage) se despliega con Terraform desde GitHub Actions, garantizando que el entorno sea replicable.
+## ✈️ Airline Data Platform
+**Real-Time Passenger Segmentation:** Este proyecto implementa una arquitectura Event-Driven en Google Cloud para segmentar pasajeros en tiempo real basada en su comportamiento de búsqueda.
 
 Ingesta en Tiempo Real: Implementé un pipeline de Apache Beam en Dataflow que procesa eventos de búsqueda de vuelos con auto-scaling.
 
@@ -23,44 +9,27 @@ Gobernanza y Calidad: Utilicé Dataform para orquestar las transformaciones dent
 
 CI/CD Robusto: El despliegue es 100% automatizado, manejando secretos de GCP de forma segura y gestionando el estado de Terraform en un backend remoto.
 
-🚀 Cómo ejecutar
-Infraestructura:
-
-Bash
-terraform init && terraform apply
-Lanzar Pipeline:
-Usa el script de lanzamiento que consume los terraform outputs para configurar el Job de Dataflow automáticamente.
-
-Simulación:
-Ejecuta python scripts/simulate_traffic.py para generar eventos de prueba.
-
 ## GitLab
 This project is also avalaible in GitLab.com: https://gitlab.com/hi-group623012/HI-data_stream_passengers
 
-## Flow
-El flujo real:
+## 🏗️ Arquitectura
+**Ingesta:** Google Pub/Sub recibe eventos de búsqueda en formato JSON. Una rutina simula un sistema superior que envía los datos al Tópico.
 
-- Pub/Sub: Recibe el evento de búsqueda.
-- Dataflow: Lee de Pub/Sub y escribe el JSON crudo en una tabla llamada vuelos_raw en BigQuery.
-- Dataform: Toma esa tabla vuelos_raw, aplica el SQL (limpieza, cálculos, filtros) y crea una tabla nueva llamada pasajeros_segmentados.
+**Procesamiento:** Pipeline de Apache Beam (Python) es ejecutado en Dataflow para limpiar y validar los datos en streaming. Luego almacena en BigQuery.
 
-### Dataflow:
-It ingests the Pub/Sub JSON and saves it in the table `vuelos_raw`.
+**Almacenamiento:** BigQuery como Data Warehouse.
 
-### Dataform:
-Toma los "datos crudos" `vuelos_raw` y crea la tabla `segmentacion_pasajeros` usando SQL al dejar los datos en BigQuery.
-It takes the "raw data" `flights_raw` and creates the `passenger_segmentation` table using SQL by leaving the data in BigQuery.
+**Transformación:** Dataform se usa para orquestar modelos SQL y generar segmentos de "Alta Prioridad".
 
-- Assertions (Calidad de Datos): No solo mueves datos; aseguras que sean correctos (ej: que el user_id nunca sea nulo).
-- Dependency Management: Si cambias la tabla base, Dataform sabe exactamente qué tablas dependientes debe actualizar.
-- Version Control: Al igual que en tus proyectos de GitHub, todo el código de Dataform vive en Git, permitiendo auditoría y trabajo en equipo.
+**IaC:** Terraform gestiona toda la infraestructura, con estado remoto en GCS. Todo el entorno (Pub/Sub, BigQuery, Storage) se despliega con Terraform desde GitHub Actions, garantizando que el entorno sea replicable.
 
-## Ejecución
+## 🚀 Ejecución
 
 ```bash
 gcloud auth application-default login --project data-stream-passengers
 gcloud config set project data-stream-passengers
 
+# to storage the terraform state in the next bucket
 gcloud storage buckets create
 
 gcloud services enable pubsub.googleapis.com \
@@ -68,19 +37,26 @@ gcloud services enable pubsub.googleapis.com \
                        bigquery.googleapis.com \
                        storage.googleapis.com \
                        compute.googleapis.com
+```
 
+### Despliega la infraestructura
+
+```bash
 terraform init
 terraform plan
 terraform apply -auto-approve
 
 export TOPIC_ID=$(terraform output -raw pubsub_topic_id)
 
-# SIN TEMPLATE
-export GOOGLE_APPLICATION_CREDENTIALS="/home/repo/Challenges/data_stream_passengers/iam/service-account.json"
-# Asegúrar que las variables tengan los valores de los outputs del nuevo TF
+export GOOGLE_APPLICATION_CREDENTIALS=$(pwd)"/iam/service-account.json"
 export PROJECT_ID=$(terraform output -raw project_id)
 export BUCKET_URL=$(terraform output -raw staging_bucket_url)
+```
 
+### Lanzar Pipeline
+Se debe usar el script de lanzamiento que consume los terraform outputs para configurar el Job de Dataflow automáticamente.
+```bash
+# Crear y arrancar el JOB
 python pipeline.py \
     --runner DataflowRunner \
     --project $PROJECT_ID \
@@ -90,52 +66,28 @@ python pipeline.py \
     --job_name airline-segmentation-v2 \
     --streaming
 
-# Permisos específicos para la cuenta de servicio developer de mi caso puntual (luego generalizar)
-gcloud projects add-iam-policy-binding data-stream-passengers \
-    --member="serviceAccount:14008294402-compute@developer.gserviceaccount.com" \
-    --role="roles/dataflow.worker"
-
-python pipeline.py \
-    --runner DataflowRunner \
-    --project data-stream-passengers \
-    --region us-central1 \
-    --temp_location gs://airline-dataflow-staging/temp \
-    --job_name flight-segmentation-v2
-
-
-# Para cancelar inmediatamente
-gcloud dataflow jobs cancel ID_DEL_JOB --region=us-central1
 ```
-## Modelo de Dataform: Segmentación de Clientes
-Identificar pasajeros "Premium con intención inmediata"
+### Simulación de Eventos
 
-```sql
-config {
-  type: "declaration",
-  database: "data-stream-passengers",
-  schema: "passenger_segmentation",
-  name: "raw_events",
-}
-```
+Se debe ejecutar un script de python `gen_data.py` para generar datos / eventos de prueba.
 
-Crear la tabla de negocio (definitions/premium_leads.sqlx)
-```sql
-config {
-  type: "table",
-  assertions: {
-    rowConditions: ["search_count > 0"]
-  }
-}
+## Real Data Flow
 
-SELECT
-  user_id,
-  count(*) as search_count,
-  max(timestamp) as last_search,
-  -- Lógica: Si buscó Business o más de 3 veces, es High Priority
-  CASE
-    WHEN logical_or(cabin = 'Business') OR count(*) > 3 THEN 'High Priority'
-    ELSE 'Standard'
-  END as segment
-FROM ${ref("raw_events")}
-GROUP BY 1
-```
+- Pub/Sub: Recibe el evento de búsqueda and saves it in the table `vuelos_raw`.
+- Dataflow: Lee de Pub/Sub y escribe el JSON crudo en una tabla llamada vuelos_raw en BigQuery.
+- Dataform: Toma esa tabla vuelos_raw, aplica el SQL (limpieza, cálculos, filtros) y crea una tabla nueva llamada pasajeros_segmentados.
+
+### Dataform:
+Toma los "datos crudos" `vuelos_raw` y crea la tabla `segmentacion_pasajeros` usando SQL al dejar los datos en BigQuery.
+
+- Assertions (Calidad de Datos): No solo mueves datos; aseguras que sean correctos (ej: que el user_id nunca sea nulo).
+- Dependency Management: Si cambias la tabla base, Dataform sabe exactamente qué tablas dependientes debe actualizar.
+- Version Control: Al igual que en tus proyectos de GitHub, todo el código de Dataform vive en Git, permitiendo auditoría y trabajo en equipo.
+
+## Modelo de Dataform:
+Segmentación de Clientes
+
+### Función:
+- Identificar pasajeros "Premium con intención inmediata" `definitions/sources.sqlx`
+- Crear la tabla de negocio `definitions/premium_leads.sqlx`
+
