@@ -20,6 +20,8 @@ jobs:
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_wrapper: false
 
     - name: Terraform Init & Apply
       id: terraform_step
@@ -28,7 +30,7 @@ jobs:
       run: |
         cd infra
         terraform init
-        terraform apply -auto-approve -no-color
+        terraform apply -auto-approve
         echo "project_id=$(terraform output -raw project_id)" >> $GITHUB_OUTPUT
         echo "bucket_url=$(terraform output -raw staging_bucket_url)" >> $GITHUB_OUTPUT
         cd ..
