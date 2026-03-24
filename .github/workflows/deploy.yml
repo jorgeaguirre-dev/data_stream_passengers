@@ -49,6 +49,7 @@ jobs:
       env:
         PROJECT_ID: ${{ steps.terraform_step.outputs.project_id }}
         BUCKET_URL: ${{ steps.terraform_step.outputs.bucket_url }}
+        GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcp_key.json
       run: |
         python src/pipeline.py \
           --runner DataflowRunner \
@@ -58,5 +59,4 @@ jobs:
           --temp_location $BUCKET_URL/temp \
           --job_name airline-segmentation-gh-$(date +%s) \
           --streaming \
-          --no_auth \
           --service_account_email=infra-deployer@data-stream-passengers.iam.gserviceaccount.com
