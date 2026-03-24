@@ -3,6 +3,11 @@ name: 'Infrastructure & Pipeline Deploy'
 on:
   push:
     branches: [ "main" ]
+    paths-ignore:
+      - '.gitignore'
+      - 'README.md'
+      - 'requirements.*'
+      - 'LICENSE'
 
 jobs:
   terraform-and-dataflow:
@@ -43,7 +48,7 @@ jobs:
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install apache-beam[gcp]
+        pip install -r requirements.txt
 
     - name: Launch Dataflow Pipeline
       env:

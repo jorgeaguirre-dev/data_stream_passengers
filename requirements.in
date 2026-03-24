@@ -1,3 +1,2 @@
 google-cloud-pubsub
 apache-beam[gcp]
-pip install apache-beam[tfrecord]
