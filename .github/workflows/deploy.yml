@@ -8,6 +8,7 @@ on:
       - 'README.md'
       - 'requirements.*'
       - 'LICENSE'
+  workflow_dispatch:
 
 jobs:
   terraform-and-dataflow:
