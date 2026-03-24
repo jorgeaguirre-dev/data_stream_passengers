@@ -54,7 +54,7 @@ jobs:
         python src/pipeline.py \
           --runner DataflowRunner \
           --project $PROJECT_ID \
-          --region us-central1 \
+          --region us-south1 \
           --staging_location $BUCKET_URL/staging \
           --temp_location $BUCKET_URL/temp \
           --job_name airline-segmentation-gh-$(date +%s) \
