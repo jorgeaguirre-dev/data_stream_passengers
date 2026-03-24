@@ -15,7 +15,7 @@ topic_path = publisher.topic_path(project_id, topic_id)
 def simulate_searches():
     # Simulamos un pasajero buscando un vuelo de Buenos Aires a Santiago
     data = {
-        "user_id": "user_123",
+        "user_id": "user_456",
         "origin": "EZE",
         "destination": "SCL",
         "cabin": "Business",

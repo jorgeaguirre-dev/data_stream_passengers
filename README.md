@@ -14,6 +14,15 @@ Transformación: Dataform para orquestar modelos SQL y generar segmentos de "Alt
 
 IaC: Infraestructura completa gestionada con Terraform.
 
+----
+Infraestructura como Código: Todo el entorno (Pub/Sub, BigQuery, Storage) se despliega con Terraform desde GitHub Actions, garantizando que el entorno sea replicable.
+
+Ingesta en Tiempo Real: Implementé un pipeline de Apache Beam en Dataflow que procesa eventos de búsqueda de vuelos con auto-scaling.
+
+Gobernanza y Calidad: Utilicé Dataform para orquestar las transformaciones dentro de BigQuery, implementando Data Quality Assertions y manteniendo un linaje de datos claro.
+
+CI/CD Robusto: El despliegue es 100% automatizado, manejando secretos de GCP de forma segura y gestionando el estado de Terraform en un backend remoto.
+
 🚀 Cómo ejecutar
 Infraestructura:
 
