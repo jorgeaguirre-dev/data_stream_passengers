@@ -22,14 +22,15 @@ jobs:
       uses: hashicorp/setup-terraform@v2
 
     - name: Terraform Init & Apply
+      id: tf_apply
       env:
         GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcp_key.json
       run: |
         cd infra
         terraform init
         terraform apply -auto-approve
-        export PROJECT_ID=$(terraform output -raw project_id)
-        export BUCKET_URL=$(terraform output -raw staging_bucket_url)
+        export PROJECT_ID=$(terraform output -raw project_id) >> $GITHUB_ENV
+        export BUCKET_URL=$(terraform output -raw staging_bucket_url) >> $GITHUB_ENV
         cd ..
 
     - name: Setup Python
@@ -45,9 +46,9 @@ jobs:
       run: |
         python src/pipeline.py \
           --runner DataflowRunner \
-          --project $PROJECT_ID \
+          --project ${{ env.PROJECT_ID }} \
           --region us-central1 \
-          --staging_location $BUCKET_URL/staging \
-          --temp_location $BUCKET_URL/temp \
-          --job_name airline-deploy-$(date +%s) \
+          --staging_location ${{ env.BUCKET_URL }}/staging \
+          --temp_location ${{ env.BUCKET_URL }}/temp \
+          --job_name airline-segmentation-gh-$(date +%s) \
           --streaming
