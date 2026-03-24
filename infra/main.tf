@@ -5,6 +5,13 @@ provider "google" {
   # zone  = var.zone
 }
 
+terraform {
+  backend "gcs" {
+    bucket  = "terraform-state-data-stream-passengers"
+    prefix  = "terraform/state"
+  }
+}
+
 # 1. Pub/Sub para Ingesta de Eventos
 resource "google_pubsub_topic" "flight_searches" {
   name = var.pubsub_topic_name

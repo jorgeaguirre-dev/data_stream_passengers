@@ -52,6 +52,8 @@ It takes the "raw data" `flights_raw` and creates the `passenger_segmentation` t
 gcloud auth application-default login --project data-stream-passengers
 gcloud config set project data-stream-passengers
 
+gcloud storage buckets create
+
 gcloud services enable pubsub.googleapis.com \
                        dataflow.googleapis.com \
                        bigquery.googleapis.com \
