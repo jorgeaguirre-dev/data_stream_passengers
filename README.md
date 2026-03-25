@@ -1,7 +1,7 @@
 # Data Stream Passengers
 
 ## ✈️ Airline Data Platform
-**Real-Time Passenger Segmentation:** Este proyecto implementa una arquitectura Event-Driven en Google Cloud para segmentar pasajeros en tiempo real basada en su comportamiento de búsqueda.
+**Real-Time Passenger Segmentation:** This project implements a Event-driven architecture pipeline on Google Cloud that ingests flight search events, processes them in real time, and segments passengers by purchase intent.
 
 Ingesta en Tiempo Real: Implementé un pipeline de Apache Beam en Dataflow que procesa eventos de búsqueda de vuelos con auto-scaling.
 
@@ -13,6 +13,19 @@ CI/CD Robusto: El despliegue es 100% automatizado, manejando secretos de GCP de 
 This project is also avalaible in GitLab.com: https://gitlab.com/hi-group623012/HI-data_stream_passengers
 
 ## 🏗️ Arquitectura
+```
+[gen_data.py] → Pub/Sub → Dataflow (pipeline.py) → BigQuery (raw_events) → Dataform → high_intent_passengers
+```
+
+| Layer | Tool | Role |
+|---|---|---|
+| Ingestion | Google Pub/Sub | Receives JSON search events |
+| Processing | Apache Beam / Dataflow | Reads from Pub/Sub, writes raw data to BigQuery |
+| Storage | BigQuery | Hosts `raw_events` and segmented tables |
+| Transformation | Dataform | Applies SQL logic to produce `high_intent_passengers` |
+| IaC | Terraform | Provisions all GCP resources |
+| CI/CD | GitHub Actions | Deploys infra and launches pipeline on push to `main` |
+
 **Ingesta:** Google Pub/Sub recibe eventos de búsqueda en formato JSON. Una rutina simula un sistema superior que envía los datos al Tópico.
 
 **Procesamiento:** Pipeline de Apache Beam (Python) es ejecutado en Dataflow para limpiar y validar los datos en streaming. Luego almacena en BigQuery.

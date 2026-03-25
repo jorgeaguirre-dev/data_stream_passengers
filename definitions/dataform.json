@@ -1,6 +1,0 @@
-{
-  "defaultDatabase": "data-stream-passengers",
-  "defaultSchema": "passenger_segmentation",
-  "defaultLocation": "US",
-  "assertionSchema": "df_assertions"
-}
