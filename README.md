@@ -29,6 +29,8 @@ This project is also available on GitLab: https://gitlab.com/hi-group623012/HI-d
 | IaC | Terraform | Provisions all GCP resources |
 | CI/CD | GitHub Actions | Deploys infra and launches pipeline on push to `main` |
 
+![raw_events](img/raw_events.png)
+
 **Ingestion:** Google Pub/Sub receives flight search events in JSON format. A simulation routine mimics an upstream system that publishes events to the topic.
 
 **Processing:** An Apache Beam pipeline (Python) runs on Dataflow to clean and validate the streaming data before writing it to BigQuery.
@@ -126,19 +128,27 @@ This publishes 5 sample events with a 2-second interval between each one. Every 
 - **Dataflow:** Reads from Pub/Sub and writes the raw JSON payload into the `raw_events` table in BigQuery.
 - **Dataform:** Reads `raw_events`, applies SQL transformations (cleaning, calculations, and filters), and produces the final `high_intent_passengers` table.
 
+![Dataflow Job](img/Dataflow_Job_Running.png)
+
 ## Dataform SQL Models (`definitions/`)
 
 Dataform takes the raw data from `raw_events` and builds the `passenger_segmentation` table using SQL directly inside BigQuery.
 
 Other models reference the source table via `${ref("raw_events")}`, which allows Dataform to resolve dependencies automatically.
 
+![Dataform Execution](img/Dataform_execution.png)
+
 - **Assertions (Data Quality):** Data is not just moved — it is validated. For example, `user_id` is asserted to never be null before the model is considered successful.
 - **Dependency Management:** If the base table changes, Dataform knows exactly which downstream tables need to be rebuilt, preventing stale or inconsistent data.
 - **Version Control:** All Dataform code lives in Git alongside the rest of the project, enabling full auditability and team collaboration.
 
+![alt text](img/Dataflow_Job_details.png)
+
 ## Dataform Model: `high_intent_passengers.sqlx`
 
 Creates the `high_intent_passengers` table in BigQuery by applying business logic on top of `raw_events`.
+
+![Dataform](img/Dataform.png)
 
 ### Purpose
 - Identify passengers with immediate premium purchase intent (`definitions/sources.sqlx`)
