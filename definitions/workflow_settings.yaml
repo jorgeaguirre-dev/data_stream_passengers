@@ -1,0 +1,5 @@
+dataformCoreVersion: "3.0.0-beta.0"
+defaultProject: "data-stream-passengers"
+defaultDataset: "passenger_segmentation"
+defaultLocation: "US"
+defaultAssertionDataset: "df_assertions"
