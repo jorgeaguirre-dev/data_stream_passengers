@@ -4,7 +4,7 @@ import json
 import sys
 
 def run(argv=None):
-    # Esto permite que Beam tome los parámetros de la terminal (--project, --staging_location, etc.)
+    # Allows Beam to read parameters from the command line (--project, --staging_location, etc.)
     pipeline_options = PipelineOptions(argv)
 
     with beam.Pipeline(options=pipeline_options) as p:

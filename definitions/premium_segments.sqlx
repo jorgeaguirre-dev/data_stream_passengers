@@ -1,9 +1,9 @@
 config {
-  type: "table", // Se creará una tabla en BigQuery
-  description: "Pasajeros con alta intención de compra en cabina Business",
+  type: "table", // A table will be created in BigQuery
+  description: "Passengers with high purchase intent in Business cabin",
   columns: {
-    user_id: "ID único del pasajero",
-    priority_score: "Nivel de prioridad basado en el tipo de cabina"
+    user_id: "Unique passenger ID",
+    priority_score: "Priority level based on cabin type"
   },
   assertions: {
     nonNull: ["user_id"],
@@ -20,5 +20,5 @@ SELECT
     ELSE 'Standard'
   END AS priority_score,
   CURRENT_TIMESTAMP() as processed_at
-FROM ${ref("raw_events")} -- Aquí Dataform maneja el linaje automáticamente
+FROM ${ref("raw_events")} -- Dataform handles lineage automatically here
 WHERE TIMESTAMP_SECONDS(CAST(timestamp AS INT64)) >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 24 HOUR)

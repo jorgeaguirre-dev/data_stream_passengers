@@ -23,25 +23,25 @@ variable "location" {
 }
 
 variable "pubsub_topic_name" {
-  description = "Nombre del tópico Pub/Sub"
+  description = "Pub/Sub topic name"
   type        = string
   default     = "flight-search-events"
 }
 
 variable "bigquery_dataset_id" {
-  description = "ID del dataset de BigQuery"
+  description = "BigQuery dataset ID"
   type        = string
   default     = "passenger_segmentation"
 }
 
 variable "dataflow_staging_bucket" {
-  description = "Nombre del bucket de staging para Dataflow"
+  description = "Staging bucket name for Dataflow"
   type        = string
   default     = "airline-dataflow-staging"
 }
 
 variable "dataflow_job_name" {
-  description = "Nombre del job de Dataflow"
+  description = "Dataflow job name"
   type        = string
   default     = "segmentation-pipeline"
 }

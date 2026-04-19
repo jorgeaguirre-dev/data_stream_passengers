@@ -3,7 +3,7 @@ import json
 import time
 from google.cloud import pubsub_v1
 
-# 1. Configuración de Credenciales
+# 1. Credentials configuration
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "../iam/service-account.json"
 
 project_id = "data-stream-passengers"
@@ -13,7 +13,7 @@ publisher = pubsub_v1.PublisherClient()
 topic_path = publisher.topic_path(project_id, topic_id)
 
 def simulate_searches():
-    # Simulamos un pasajero buscando un vuelo de Buenos Aires a Santiago
+    # Simulates a passenger searching for a flight from Buenos Aires to Santiago
     data = {
         "user_id": "user_456",
         "origin": "EZE",
@@ -25,12 +25,12 @@ def simulate_searches():
     message_json = json.dumps(data)
     message_bytes = message_json.encode("utf-8")
 
-    # Enviamos al tópico de Pub/Sub
+    # Publishes the message to the Pub/Sub topic
     future = publisher.publish(topic_path, data=message_bytes)
-    print(f"Mensaje enviado: {future.result()}")
+    print(f"Message sent: {future.result()}")
 
 if __name__ == "__main__":
-    print("Iniciando simulación de tráfico para Aerolinea...")
-    for i in range(5): # Enviamos 5 eventos
+    print("Starting traffic simulation for Airline...")
+    for i in range(5):  # Sends 5 events
         simulate_searches()
         time.sleep(2)
